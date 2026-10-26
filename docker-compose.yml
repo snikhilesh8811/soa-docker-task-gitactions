@@ -1,0 +1,23 @@
+
+services:
+  backend:
+    build: ./backend
+    container_name: coworking-backend
+    ports:
+      - "8001:8001"
+    environment:
+      SPRING_DATASOURCE_URL: "jdbc:postgresql://host.docker.internal:5432/exam_2400032022"
+      SPRING_DATASOURCE_USERNAME: "postgres"
+      SPRING_DATASOURCE_PASSWORD: "Nikhil6757999@"
+      EUREKA_CLIENT_ENABLED: "false"
+      EUREKA_CLIENT_REGISTER-WITH-EUREKA: "false"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  frontend:
+    build: ./frontend
+    container_name: coworking-frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend

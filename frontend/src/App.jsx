@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import "./style.css";
 
-const API = "http://localhost:8001";
+const API = "";
 const URL = "/coworking";
 
 const emptyForm = {
