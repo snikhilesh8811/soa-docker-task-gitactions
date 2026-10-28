@@ -1,18 +1,36 @@
 
 services:
+  postgresdb:
+    image: postgres:16-alpine
+    container_name: coworking-postgres
+    environment:
+      POSTGRES_DB: exam_2400032022
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: Nikhil6757999@
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d exam_2400032022"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
   backend:
     build: ./backend
     container_name: coworking-backend
     ports:
       - "8001:8001"
     environment:
-      SPRING_DATASOURCE_URL: "jdbc:postgresql://host.docker.internal:5432/exam_2400032022"
-      SPRING_DATASOURCE_USERNAME: "postgres"
-      SPRING_DATASOURCE_PASSWORD: "Nikhil6757999@"
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgresdb:5432/exam_2400032022
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: Nikhil6757999@
       EUREKA_CLIENT_ENABLED: "false"
-      EUREKA_CLIENT_REGISTER-WITH-EUREKA: "false"
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
+      EUREKA_CLIENT_REGISTER_WITH_EUREKA: "false"
+    depends_on:
+      postgresdb:
+        condition: service_healthy
 
   frontend:
     build: ./frontend
@@ -21,3 +39,6 @@ services:
       - "3000:80"
     depends_on:
       - backend
+
+volumes:
+  postgres_data:
